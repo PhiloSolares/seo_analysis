@@ -331,6 +331,9 @@ def analyze_website(competitor_url: str):
 
 
 from flask import Flask, request, jsonify
+from flask import request, jsonify
+import gradio as gr
+import os
 
 app = Flask(__name__)
 
@@ -350,9 +353,7 @@ def create_gradio_interface():
         title="SEO Analysis Tool",
         description="Enter a competitor URL to perform an SEO analysis.",
     )
-    interface.launch(inline=True)
     return interface
-
 
 @app.route('/analyze', methods=['POST'])
 def analyze_route():
@@ -361,5 +362,7 @@ def analyze_route():
     return jsonify(result)
 
 if __name__ == "__main__":
-    create_gradio_interface()
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    interface = create_gradio_interface()
+    gradio_app = interface.app
+    gradio_app.add_url_rule('/analyze', view_func=analyze_route, methods=['POST'])
+    gradio_app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
