@@ -329,11 +329,12 @@ def analyze_website(competitor_url: str):
     return topmetatags, topheadingtags, top10keywords, cluster_table.to_html(), cluster_plot, keyword_plot, seo_analysis[0]
 
 
-# Update the Gradio interface
-gr.Interface(
-    fn=analyze_website,
-    inputs=[competitor_url_input],
-    outputs=[
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 7860))
+    gr.Interface(
+        fn=analyze_website,
+        inputs=[competitor_url_input],
+        outputs=[
         meta_tags_output,
         heading_tags_output,
         top10keywords_output,
@@ -341,7 +342,7 @@ gr.Interface(
         cluster_plot_output,
         keyword_plot_output,
         seo_analysis_output,
-    ],
-    title="SEO Analysis Tool",
-    description="Enter a competitor URL to perform an SEO analysis.",
-).launch(share=True, debug=True)
+        ],
+        title="SEO Analysis Tool",
+        description="Enter a competitor URL to perform an SEO analysis.",
+    ).launch(debug=True, share=True, port=port)
