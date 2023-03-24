@@ -347,4 +347,4 @@ if __name__ == "__main__":
         ],
         title="SEO Analysis Tool",
         description="Enter a competitor URL to perform an SEO analysis.",
-    ).launch(debug=True, share=True, port=port)
+    ).launch(debug=True, share=True)
