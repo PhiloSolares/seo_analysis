@@ -334,6 +334,29 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+def create_gradio_interface():
+    return gr.Interface(
+        fn=analyze_website,
+        inputs=competitor_url_input,
+        outputs=[
+            meta_tags_output,
+            heading_tags_output,
+            top10keywords_output,
+            cluster_table_output,
+            cluster_plot_output,
+            keyword_plot_output,
+            seo_analysis_output,
+        ],
+        title="SEO Analysis Tool",
+        description="Enter a competitor URL to perform an SEO analysis.",
+    )
+
+@app.route('/', methods=['GET'])
+def index():
+    interface = create_gradio_interface()
+    return interface.serve()
+
+
 @app.route('/analyze', methods=['POST'])
 def analyze_route():
     url = request.json['url']
