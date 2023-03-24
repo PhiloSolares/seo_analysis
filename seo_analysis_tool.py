@@ -329,19 +329,21 @@ def analyze_website(competitor_url: str):
     return topmetatags, topheadingtags, top10keywords, cluster_table.to_html(), cluster_plot, keyword_plot, seo_analysis[0]
 
 
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 7860))
     gr.Interface(
         fn=analyze_website,
-        inputs=[competitor_url_input],
+        inputs=competitor_url_input,
         outputs=[
-        meta_tags_output,
-        heading_tags_output,
-        top10keywords_output,
-        cluster_table_output,
-        cluster_plot_output,
-        keyword_plot_output,
-        seo_analysis_output,
+            meta_tags_output,
+            heading_tags_output,
+            top10keywords_output,
+            cluster_table_output,
+            cluster_plot_output,
+            keyword_plot_output,
+            seo_analysis_output,
         ],
         title="SEO Analysis Tool",
         description="Enter a competitor URL to perform an SEO analysis.",
