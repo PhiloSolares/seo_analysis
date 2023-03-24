@@ -330,21 +330,15 @@ def analyze_website(competitor_url: str):
 
 
 
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/analyze', methods=['POST'])
+def analyze_route():
+    url = request.json['url']
+    result = analyze_website(url)
+    return jsonify(result)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 7860))
-    gr.Interface(
-        fn=analyze_website,
-        inputs=competitor_url_input,
-        outputs=[
-            meta_tags_output,
-            heading_tags_output,
-            top10keywords_output,
-            cluster_table_output,
-            cluster_plot_output,
-            keyword_plot_output,
-            seo_analysis_output,
-        ],
-        title="SEO Analysis Tool",
-        description="Enter a competitor URL to perform an SEO analysis.",
-    ).launch(debug=True, share=True)
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

@@ -13,3 +13,4 @@ googlesearch-python
 pytrends
 scikit-learn
 ipython
+flask
