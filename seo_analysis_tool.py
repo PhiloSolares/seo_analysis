@@ -13,12 +13,22 @@ import seaborn as sns
 import tempfile
 import gradio as gr
 import openai
+from googlesearch import search
+from pytrends.request import TrendReq
+from sklearn.manifold import MDS, TSNE
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.cluster import KMeans
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from IPython.display import HTML
+
+
+
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('words')
 
 # Set your OpenAI API key here
 openai.api_key = os.environ['OPENAI_API_KEY']
-
-# Download NLTK stopwords
-nltk.download('stopwords')
 
 
 #@title Define functions
