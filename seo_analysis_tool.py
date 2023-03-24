@@ -335,7 +335,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 def create_gradio_interface():
-    return gr.Interface(
+    interface = gr.Interface(
         fn=analyze_website,
         inputs=competitor_url_input,
         outputs=[
@@ -350,11 +350,8 @@ def create_gradio_interface():
         title="SEO Analysis Tool",
         description="Enter a competitor URL to perform an SEO analysis.",
     )
-
-@app.route('/', methods=['GET'])
-def index():
-    interface = create_gradio_interface()
-    return interface.serve()
+    interface.launch(inline=True)
+    return interface
 
 
 @app.route('/analyze', methods=['POST'])
@@ -364,4 +361,5 @@ def analyze_route():
     return jsonify(result)
 
 if __name__ == "__main__":
+    create_gradio_interface()
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
