@@ -333,7 +333,7 @@ from flask import Flask, request, jsonify, render_template
 import gradio as gr
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=os.path.abspath("templates"))
 
 @app.route('/', methods=['GET'])
 def index():
