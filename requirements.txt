@@ -12,3 +12,4 @@ seaborn
 googlesearch-python
 pytrends
 scikit-learn
+ipython
