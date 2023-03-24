@@ -329,9 +329,7 @@ def analyze_website(competitor_url: str):
     return topmetatags, topheadingtags, top10keywords, cluster_table.to_html(), cluster_plot, keyword_plot, seo_analysis[0]
 
 
-
 from flask import Flask, request, jsonify
-from flask import request, jsonify
 import gradio as gr
 import os
 
@@ -355,6 +353,11 @@ def create_gradio_interface():
     )
     return interface
 
+@app.route('/', methods=['GET'])
+def index():
+    interface = create_gradio_interface()
+    return interface.launch(inline=True, share=False)
+
 @app.route('/analyze', methods=['POST'])
 def analyze_route():
     url = request.json['url']
@@ -362,7 +365,4 @@ def analyze_route():
     return jsonify(result)
 
 if __name__ == "__main__":
-    interface = create_gradio_interface()
-    gradio_app = interface.app
-    gradio_app.add_url_rule('/analyze', view_func=analyze_route, methods=['POST'])
-    gradio_app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
