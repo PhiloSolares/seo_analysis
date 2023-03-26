@@ -6,6 +6,7 @@ import re
 import string
 import nltk
 from nltk.corpus import stopwords
+from nltk.corpus import words
 from gensim.models import Word2Vec
 import pandas as pd
 import matplotlib.pyplot as plt
