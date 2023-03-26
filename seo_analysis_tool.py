@@ -124,7 +124,7 @@ def visualize_clusters(words, model):
 
 
 
-def create_cluster_table(words, model, num_clusters=5):
+def create_cluster_table_og(words, model, num_clusters=5):
     matrix = np.zeros((len(words), model.vector_size))
 
     for i, word in enumerate(words):
@@ -150,6 +150,29 @@ def create_cluster_table(words, model, num_clusters=5):
     df = pd.DataFrame(data)
     return df
 
+
+def create_cluster_table(words, model, clusters):
+    matrix = np.zeros((len(words), model.vector_size))
+
+    for i, word in enumerate(words):
+        matrix[i, :] = model.wv[word]
+
+    # Create a dictionary to store words per cluster
+    cluster_dict = {}
+    for i, word in enumerate(words):
+        cluster_id = clusters[i]
+        if cluster_id not in cluster_dict:
+            cluster_dict[cluster_id] = []
+        cluster_dict[cluster_id].append(word)
+
+    # Create a DataFrame from the dictionary
+    max_words = max(len(cluster_words) for cluster_words in cluster_dict.values())
+    num_clusters = len(cluster_dict)
+    data = {f"Cluster {i}": cluster_dict.get(i, []) + [None] * (max_words - len(cluster_dict.get(i, [])))
+            for i in range(num_clusters)}
+
+    df = pd.DataFrame(data)
+    return df
 
 
 
@@ -199,7 +222,7 @@ def visualize_clusters_og(words, model):
     plt.title('Word Clusters based on Thematic Relatedness')
     plt.show()
 
-def visualize_clusters_plot(words, model):
+def visualize_clusters_plot_og(words, model):
     matrix = np.zeros((len(words), model.vector_size))
 
     for i, word in enumerate(words):
@@ -234,6 +257,43 @@ def visualize_clusters_plot(words, model):
     plt.savefig(temp_image_file.name, format='png')
     plt.close()
     return temp_image_file.name
+
+
+def visualize_clusters_plot(words, model):
+    matrix = np.zeros((len(words), model.vector_size))
+
+    for i, word in enumerate(words):
+        matrix[i, :] = model.wv[word]
+
+    n_clusters = 4
+    kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+    clusters = kmeans.fit_predict(matrix)
+
+    tsne = TSNE(n_components=2, random_state=42)
+    coords = tsne.fit_transform(matrix)
+
+    x, y = coords[:, 0], coords[:, 1]
+
+    colors = cm.rainbow(np.linspace(0, 1, n_clusters))
+
+    fig, axs = plt.subplots(2, 2, figsize=(8, 8), gridspec_kw={'width_ratios': [sum(clusters == 0) + sum(clusters == 1), sum(clusters == 2) + sum(clusters == 3)], 'height_ratios': [sum(clusters == 0) + sum(clusters == 2), sum(clusters == 1) + sum(clusters == 3)]})
+    fig.subplots_adjust(wspace=0, hspace=0)
+
+    for ax in axs.ravel():
+        ax.axis('off')
+
+    for i, word in enumerate(words):
+        cluster_idx = clusters[i]
+        ax = axs[cluster_idx // 2, cluster_idx % 2]
+        ax.scatter(x[i], y[i], c=[colors[cluster_idx]], alpha=0.7)
+        ax.text(x[i], y[i], word, fontsize=10)
+
+    plt.legend(loc="best", fontsize=13)
+    plt.tight_layout()
+    temp_image_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+    plt.savefig(temp_image_file.name, format='png')
+    plt.close()
+    return temp_image_file.name, clusters
 
 
 def sanitize_url(url):
@@ -294,9 +354,9 @@ def analyze_website(competitor_url: str):
     words = [word for word, _ in analyze_keywords(keywords_counter, top_n=50)]
     clusters = [model.wv.doesnt_match(words)] * len(words)
 
-    cluster_table = create_cluster_table(words, model, num_clusters=4)
 
-    cluster_plot = visualize_clusters_plot(words, model)
+    cluster_plot,clusters = visualize_clusters_plot(words, model)
+    cluster_table = create_cluster_table(words, model, clusters)
     keyword_plot = visualize_keywords(keywords_counter, top_n=10)
 
     table_string = cluster_table.to_string(index=False)
