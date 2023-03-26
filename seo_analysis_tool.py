@@ -329,21 +329,21 @@ def analyze_website(competitor_url: str):
     return topmetatags, topheadingtags, top10keywords, cluster_table.to_html(), cluster_plot, keyword_plot, seo_analysis[0]
 
 
-from flask import Flask, request, jsonify, render_template
-import gradio as gr
-import os
 
-app = Flask(__name__, template_folder=os.path.abspath("templates"))
+interface = gr.Interface(
+    fn=analyze_website,
+    inputs=competitor_url_input,
+    outputs=[
+        meta_tags_output,
+        heading_tags_output,
+        top10keywords_output,
+        cluster_table_output,
+        cluster_plot_output,
+        keyword_plot_output,
+        seo_analysis_output,
+    ],
+    title="SEO Analysis Tool",
+    description="Enter a competitor URL to perform an SEO analysis.",
+)
 
-@app.route('/', methods=['GET'])
-def index():
-    return render_template('index.html')
-
-@app.route('/analyze', methods=['POST'])
-def analyze_route():
-    url = request.json['url']
-    result = analyze_website(url)
-    return jsonify(result)
-
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+interface.launch(share=True)

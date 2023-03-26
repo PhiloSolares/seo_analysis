@@ -1,1 +1,1 @@
-web: python seo_analysis_tool.py
+web: source setup.sh && python seo_analysis_tool.py
