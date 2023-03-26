@@ -380,7 +380,7 @@ def analyze_website(competitor_url: str):
       2. Based on the market sector of the company, give a name to each cluster based on the theme it represents. The name needs to be the best summary of all the words in the cluster.
       3. Perform a SWOT analysis (Strengths, Weaknesses, Opportunities, and Threats) from an SEO perspective for the company as a whole, taking into account the meta tags, heading tags, top 10 keywords, and the clusters.
       Please provide your analysis in a clear and concise manner.
-      4. Lastly, suggest a list of 10 words and 10 phrases that the company should be using to improve their SEO
+      4. Lastly, suggest a list of 5 single words and 5 phrases (no longer than 3 words each) that the company should be using to improve their SEO
       """.format(meta_tags=meta_tags, heading_tags=heading_tags, top10keywords=top10keywords, table_string=table_string)
 
 
