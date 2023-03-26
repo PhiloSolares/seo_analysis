@@ -22,6 +22,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from IPython.display import HTML
+import numpy as np
 
 
 
