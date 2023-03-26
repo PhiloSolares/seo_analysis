@@ -233,6 +233,16 @@ def visualize_clusters_plot(words, model):
     return temp_image_file.name
 
 
+def sanitize_url(url):
+    if not re.match('^(http|https)://', url):
+        url = 'http://' + url
+    
+    if not re.match('^(http|https)://www\.', url):
+        url = re.sub('^(http|https)://', r'\g<0>www.', url)
+    
+    return url
+
+
 # Define the inputs and outputs
 competitor_url_input = gr.inputs.Textbox(placeholder="Enter a competitor URL")
 
@@ -245,8 +255,9 @@ keyword_plot_output = gr.outputs.Image(type='filepath', label="Keyword Plot")
 seo_analysis_output = gr.outputs.Textbox(label="SEO Analysis")
 
 def analyze_website(competitor_url: str):
-    soup = get_page_content(competitor_url)
-
+    sanitized_url = sanitize_url(competitor_url)
+    soup = get_page_content(sanitized_url)
+    
     # Scrape and analyze meta tags
     meta_tags = get_meta_tags(soup)
     topmetatags = ""
