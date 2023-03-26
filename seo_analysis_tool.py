@@ -7,6 +7,7 @@ import string
 import nltk
 from nltk.corpus import stopwords
 from nltk.corpus import words
+from nltk.tokenize import word_tokenize
 from gensim.models import Word2Vec
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -257,7 +258,7 @@ seo_analysis_output = gr.outputs.Textbox(label="SEO Analysis")
 def analyze_website(competitor_url: str):
     sanitized_url = sanitize_url(competitor_url)
     soup = get_page_content(sanitized_url)
-    
+
     # Scrape and analyze meta tags
     meta_tags = get_meta_tags(soup)
     topmetatags = ""
