@@ -294,7 +294,7 @@ def analyze_website(competitor_url: str):
     words = [word for word, _ in analyze_keywords(keywords_counter, top_n=50)]
     clusters = [model.wv.doesnt_match(words)] * len(words)
 
-    cluster_table = create_cluster_table(words, model, num_clusters=5)
+    cluster_table = create_cluster_table(words, model, num_clusters=4)
 
     cluster_plot = visualize_clusters_plot(words, model)
     keyword_plot = visualize_keywords(keywords_counter, top_n=10)
@@ -316,10 +316,11 @@ def analyze_website(competitor_url: str):
       {table_string}
 
       Please analyze the provided information and perform the following tasks:
-      1. Assign a name to each cluster based on the theme it represents.
-      2. Perform a SWOT analysis (Strengths, Weaknesses, Opportunities, and Threats) from an SEO perspective for the company website as a whole, taking into account the meta tags, heading tags, top 10 keywords, and the clusters.
-
+      1. Predict what the website is all about (the market sector).
+      2. Based on the market sector of the company, give a name to each cluster based on the theme it represents. The name needs to be the best summary of all the words in the cluster.
+      3. Perform a SWOT analysis (Strengths, Weaknesses, Opportunities, and Threats) from an SEO perspective for the company as a whole, taking into account the meta tags, heading tags, top 10 keywords, and the clusters.
       Please provide your analysis in a clear and concise manner.
+      4. Lastly, suggest a list of 10 words and 10 phrases that the company should be using to improve their SEO
       """.format(meta_tags=meta_tags, heading_tags=heading_tags, top10keywords=top10keywords, table_string=table_string)
 
 
