@@ -25,6 +25,7 @@ from IPython.display import HTML
 import numpy as np
 import matplotlib.cm as cm
 from urllib.parse import urlparse, urljoin
+import os
 
 
 
@@ -149,8 +150,6 @@ def create_cluster_table(words, model, clusters):
     return df
 
 
-
-
 def clean_text(text):
     # Separate words that are meant to be separated
     text = re.sub(r'([a-z])([A-Z])', r'\1 \2', text)
@@ -252,7 +251,7 @@ def sanitize_url(url):
 
 
 
-# Define the inputs and outputs
+
 # Define the inputs and outputs
 competitor_url_input = gr.inputs.Textbox(label="Competitor URL", placeholder="Enter a competitor URL")
 
@@ -509,5 +508,4 @@ gr.Interface(
     title="SEO Analysis Tool",
     description="Enter a competitor URL to perform an SEO analysis.",
     layout="vertical"
-).launch(share=True, debug=True)
-
+).launch(share=True)
