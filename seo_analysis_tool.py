@@ -24,6 +24,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from IPython.display import HTML
 import numpy as np
 import matplotlib.cm as cm
+from urllib.parse import urlparse, urljoin
 
 
 
