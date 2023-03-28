@@ -25,7 +25,6 @@ from IPython.display import HTML
 import numpy as np
 import matplotlib.cm as cm
 from urllib.parse import urlparse, urljoin
-import os
 
 
 
