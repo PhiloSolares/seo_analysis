@@ -372,6 +372,7 @@ def analyze_single_page(competitor_url: str):
 
     seo_analysis = analyse_SEO(SEO_prompt)
 
+    print(topmetatags, topheadingtags,top10keywords,cluster_table.to_html(), cluster_plot, keyword_plot,seo_analysis[0])
 
     return topmetatags, topheadingtags, top10keywords, cluster_table.to_html(), cluster_plot, keyword_plot, seo_analysis[0]
 
