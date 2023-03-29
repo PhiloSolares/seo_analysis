@@ -456,6 +456,14 @@ def analyze_website(competitor_url: str, full_site_scrape: bool = False):
         sorted_values = sorted(count.keys(), key=lambda x: count[x], reverse=True)
         filtered_values = [value for value in sorted_values if value.strip() != ""]
         heading_tags_compressed[key] = filtered_values[:10]
+
+
+    heading_tags_clean = {}
+
+    for key, values in heading_tags.items():
+        count = Counter(values)
+        sorted_values = sorted(count.keys(), key=lambda x: count[x], reverse=True)
+        heading_tags_clean = [value for value in sorted_values if value.strip() != ""]
     
     print("cleaned up heading tags")
 
@@ -503,10 +511,10 @@ def analyze_website(competitor_url: str, full_site_scrape: bool = False):
 
     print("ran seo analysis")
 
-    print(topmetatags, topheadingtags,top10keywords,cluster_table.to_html(), cluster_plot, keyword_plot,seo_analysis[0])
+    print(topmetatags, heading_tags_clean,top10keywords,cluster_table.to_html(), cluster_plot, keyword_plot,seo_analysis[0])
 
 
-    return topmetatags, topheadingtags, top10keywords, cluster_table.to_html(), cluster_plot, keyword_plot, seo_analysis[0]
+    return topmetatags, heading_tags_clean, top10keywords, cluster_table.to_html(), cluster_plot, keyword_plot, seo_analysis[0]
 
 
 
