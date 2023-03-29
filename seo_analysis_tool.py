@@ -531,6 +531,6 @@ gr.Interface(
         seo_analysis_output,
     ],
     title="SEO Analysis Tool",
-    description="Enter a competitor URL to perform an SEO analysis.",
+    description="Enter a competitor URL to perform an SEO analysis (some javascript pages will deny full scrape).",
     layout="vertical"
 ).launch(share=True)
