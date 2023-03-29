@@ -372,8 +372,6 @@ def analyze_single_page(competitor_url: str):
 
     seo_analysis = analyse_SEO(SEO_prompt)
 
-    print(topmetatags, topheadingtags,top10keywords,cluster_table.to_html(), cluster_plot, keyword_plot,seo_analysis[0])
-
     return topmetatags, topheadingtags, top10keywords, cluster_table.to_html(), cluster_plot, keyword_plot, seo_analysis[0]
 
 
@@ -397,12 +395,16 @@ def analyze_website(competitor_url: str, full_site_scrape: bool = False):
         except Exception as e:
             print(f"Failed to analyze link: {link}. Error: {e}")
 
+    print('got all the links')
+
     # Scrape and analyze meta tags
     meta_tags = get_meta_tags(soup_collection)
     topmetatags = ""
     for name, content in meta_tags.items():
         if "description" in name.lower():
             topmetatags += (f"{name}: {content}\n")
+
+    print('fetched metatags')
 
     # Scrape and analyze heading tags
     heading_tags = get_heading_tags(soup_collection)
@@ -411,6 +413,8 @@ def analyze_website(competitor_url: str, full_site_scrape: bool = False):
         filtered_headings = [heading for heading in headings if len(heading) > 2]
         if filtered_headings:
             topheadingtags += (f"{tag}: {', '.join(filtered_headings)}\n")
+
+    print("fetched heading tags")
 
     # Scrape, analyze, and visualize keywords from page content
     page_text = soup_collection.get_text()
@@ -423,6 +427,8 @@ def analyze_website(competitor_url: str, full_site_scrape: bool = False):
     for keyword, count in analyze_keywords(keywords_counter, top_n=10):
         top10keywords += (f"{keyword}: {count}\n")
 
+    print("fetched keywords")
+
     # Semantic clustering and visualization
     sentences = [preprocessed_text[i:i+10] for i in range(0, len(preprocessed_text), 10)]
     model = Word2Vec(sentences, vector_size=100, window=5, min_count=1, workers=4)
@@ -430,12 +436,18 @@ def analyze_website(competitor_url: str, full_site_scrape: bool = False):
     words = [word for word, _ in analyze_keywords(keywords_counter, top_n=50)]
     clusters = [model.wv.doesnt_match(words)] * len(words)
 
+    print("calculated clusters")
+
     cluster_plot,clusters = visualize_clusters_plot(words, model)
     cluster_table = create_cluster_table(words, model, clusters)
     keyword_plot = visualize_keywords(keywords_counter, top_n=10)
 
+
+    print("plotted figures")
+
     table_string = cluster_table.to_string(index=False)
 
+    print("created table string")
 
     heading_tags_compressed = {}
 
@@ -445,7 +457,7 @@ def analyze_website(competitor_url: str, full_site_scrape: bool = False):
         filtered_values = [value for value in sorted_values if value.strip() != ""]
         heading_tags_compressed[key] = filtered_values[:10]
     
-
+    print("cleaned up heading tags")
 
 
     SEO_prompt = f"""The following information is given about a company's website:
@@ -471,7 +483,7 @@ def analyze_website(competitor_url: str, full_site_scrape: bool = False):
       4. Lastly, suggest a list of 10 words and 10 phrases that the company should be using to improve their SEO
       """.format(meta_tags=meta_tags, heading_tags_compressed=heading_tags_compressed, top10keywords=top10keywords, table_string=table_string)
 
-
+    print("defined SEO prompt")
 
     def analyse_SEO(SEO_prompt):
       response = openai.Completion.create(
@@ -488,6 +500,10 @@ def analyze_website(competitor_url: str, full_site_scrape: bool = False):
 
 
     seo_analysis = analyse_SEO(SEO_prompt)
+
+    print("ran seo analysis")
+
+    print(topmetatags, topheadingtags,top10keywords,cluster_table.to_html(), cluster_plot, keyword_plot,seo_analysis[0])
 
 
     return topmetatags, topheadingtags, top10keywords, cluster_table.to_html(), cluster_plot, keyword_plot, seo_analysis[0]
