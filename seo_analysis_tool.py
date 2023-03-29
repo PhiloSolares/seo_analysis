@@ -462,8 +462,8 @@ def analyze_website(competitor_url: str, full_site_scrape: bool = False):
 
     for key, values in heading_tags.items():
         count = Counter(values)
-        sorted_values = sorted(count.keys(), key=lambda x: count[x], reverse=True)
-        heading_tags_clean = [value for value in sorted_values if value.strip() != ""]
+        sorted_values_clean = sorted(count.keys(), key=lambda x: count[x], reverse=True)
+        heading_tags_clean = [value for value in sorted_values_clean if value.strip() != ""]
     
     print("cleaned up heading tags")
 
