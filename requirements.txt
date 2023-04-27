@@ -13,3 +13,5 @@ googlesearch-python
 pytrends
 scikit-learn
 ipython
+celery
+redis

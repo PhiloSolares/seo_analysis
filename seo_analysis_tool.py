@@ -251,12 +251,16 @@ def sanitize_url(url):
 
 
 
+# Import the required packages
+from celery import Celery
+
+# Configure the Celery app
+app = Celery("tasks", broker=os.environ['REDIS_URL'], backend=os.environ['REDIS_URL'])
 
 # Define the inputs and outputs
 competitor_url_input = gr.inputs.Textbox(label="Competitor URL", placeholder="Enter a competitor URL")
 
 full_site_scrape_checkbox = gr.inputs.Checkbox(label="Tick for full site scrape (otherwise landing page only)")
-
 
 meta_tags_output = gr.outputs.Textbox(label="Meta Tags")
 heading_tags_output = gr.outputs.Textbox(label="Heading Tags")
@@ -265,6 +269,7 @@ cluster_table_output = gr.outputs.HTML(label="Cluster Table")
 cluster_plot_output = gr.outputs.Image(type='filepath', label="Cluster Plot")
 keyword_plot_output = gr.outputs.Image(type='filepath', label="Keyword Plot")
 seo_analysis_output = gr.outputs.Textbox(label="SEO Analysis")
+
 
 def append_unique_elements(source, target):
     for element in source:
@@ -377,8 +382,9 @@ def analyze_single_page(competitor_url: str):
 
 
 
-def analyze_website(competitor_url: str, full_site_scrape: bool = False):
-    
+# Wrap the analyze_website function with the Celery app.task decorator
+@app.task
+def analyze_website_task(competitor_url: str, full_site_scrape: bool = False):    
     if not full_site_scrape:
         topmetatags, topheadingtags, top10keywords, cluster_table, cluster_plot, keyword_plot, seo_analysis = analyze_single_page(competitor_url)
         return topmetatags, topheadingtags, top10keywords, cluster_table, cluster_plot, keyword_plot, seo_analysis
@@ -519,7 +525,7 @@ def analyze_website(competitor_url: str, full_site_scrape: bool = False):
 
 
 gr.Interface(
-    fn=analyze_website,
+    fn=analyze_website_task.delay,
     inputs=[competitor_url_input, full_site_scrape_checkbox],
     outputs=[
         meta_tags_output,
@@ -533,4 +539,4 @@ gr.Interface(
     title="SEO Analysis Tool",
     description="Enter a competitor URL to perform a SEO analysis (some javascript pages will deny full scrape).",
     layout="vertical"
-).launch(share=True)
+).launch(share=True,debug=True)
