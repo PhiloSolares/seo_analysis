@@ -522,10 +522,13 @@ def analyze_website_task(competitor_url: str, full_site_scrape: bool = False):
 
     return topmetatags, heading_tags_clean, top10keywords, cluster_table.to_html(), cluster_plot, keyword_plot, seo_analysis[0]
 
+def get_analyze_website_result(competitor_url: str, full_site_scrape: bool = False):
+    task = analyze_website_task.delay(competitor_url, full_site_scrape)
+    return task.get()
 
 
 gr.Interface(
-    fn=analyze_website_task.delay,
+    fn=get_analyze_website_result,
     inputs=[competitor_url_input, full_site_scrape_checkbox],
     outputs=[
         meta_tags_output,
