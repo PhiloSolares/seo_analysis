@@ -522,11 +522,22 @@ def analyze_website_task(competitor_url: str, full_site_scrape: bool = False):
 
     return topmetatags, heading_tags_clean, top10keywords, cluster_table.to_html(), cluster_plot, keyword_plot, seo_analysis[0]
 
+from celery.result import AsyncResult
+
+# Add a new function to get the status of a Celery task
+def get_task_status(task_id: str):
+    task = AsyncResult(task_id, app=app)
+    return task.status
+
+# Modify the existing get_analyze_website_result function to return dummy results
 def get_analyze_website_result(competitor_url: str, full_site_scrape: bool = False):
     task = analyze_website_task.delay(competitor_url, full_site_scrape)
+    while not task.ready():
+        dummy_results = ("Loading...", "Loading...", "Loading...", "Loading...", "Loading...", "Loading...")
+        yield dummy_results
     return task.get()
 
-
+# Modify the gr.Interface function to use the new get_analyze_website_result function
 gr.Interface(
     fn=get_analyze_website_result,
     inputs=[competitor_url_input, full_site_scrape_checkbox],
@@ -542,4 +553,4 @@ gr.Interface(
     title="SEO Analysis Tool",
     description="Enter a competitor URL to perform a SEO analysis (some javascript pages will deny full scrape).",
     layout="vertical"
-).launch(share=True,debug=True)
+).launch(share=True, debug=True)
